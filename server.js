@@ -1,16 +1,11 @@
 /**
  * DropLoad Backend — server.js
  * Powered by yt-dlp for real media info & downloads
- *
- * Endpoints:
- *   GET  /api/info?url=<media-url>          → returns title, source, duration, formats
- *   GET  /api/download?url=<url>&format=<f> → streams the media file to the client
- *   GET  /health                            → uptime check
  */
 
 const express = require('express');
 const cors    = require('cors');
-const { spawn, execFile } = require('child_process');
+const { spawn } = require('child_process');
 const path    = require('path');
 const fs      = require('fs');
 const os      = require('os');
@@ -18,19 +13,15 @@ const os      = require('os');
 const app  = express();
 const PORT = process.env.PORT || 3001;
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
-
-// Serve the frontend from the same directory if present
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /**
  * Run yt-dlp with the given args and return stdout as a string.
- * On Windows, uses "python -m yt_dlp" since the yt-dlp executable
- * may not be on PATH after a pip install.
+ * On Windows uses "python -m yt_dlp" since yt-dlp.exe may not be on PATH.
  */
 function ytDlp(args) {
   const isWin = process.platform === 'win32';
@@ -38,8 +29,7 @@ function ytDlp(args) {
   const argv  = isWin ? ['-m', 'yt_dlp', ...args] : args;
 
   return new Promise((resolve, reject) => {
-    let stdout = '';
-    let stderr = '';
+    let stdout = '', stderr = '';
     const proc = spawn(cmd, argv);
     proc.stdout.on('data', d => (stdout += d));
     proc.stderr.on('data', d => (stderr += d));
@@ -51,11 +41,8 @@ function ytDlp(args) {
   });
 }
 
-/**
- * Convert seconds (number or string) → "H:MM:SS" or "M:SS"
- */
 function fmtDuration(secs) {
-  if (!secs) return '–';
+  if (!secs) return '-';
   const s = Math.round(Number(secs));
   if (isNaN(s)) return String(secs);
   const h = Math.floor(s / 3600);
@@ -65,9 +52,6 @@ function fmtDuration(secs) {
   return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${m}:${pad(sec)}`;
 }
 
-/**
- * Rough human-readable file size from bytes.
- */
 function humanSize(bytes) {
   if (!bytes) return null;
   const units = ['B','KB','MB','GB'];
@@ -76,14 +60,9 @@ function humanSize(bytes) {
   return `~${b.toFixed(b < 10 ? 1 : 0)} ${units[i]}`;
 }
 
-/**
- * Build a clean list of download formats from yt-dlp JSON.
- * We surface the most useful quality tiers rather than all 40+ raw formats.
- */
 function buildFormats(info) {
   const formats = info.formats || [];
 
-  // ── Video formats: pick best for each height ─────────────────────────
   const videoByHeight = {};
   for (const f of formats) {
     if (!f.vcodec || f.vcodec === 'none') continue;
@@ -105,7 +84,6 @@ function buildFormats(info) {
     }
   }
 
-  // Sort heights descending, keep up to 5 tiers
   const heights = Object.keys(videoByHeight)
     .map(Number)
     .sort((a, b) => b - a)
@@ -117,7 +95,8 @@ function buildFormats(info) {
                 : h >= 1080 ? `${h}p · MP4`
                 : `${h}p · MP4`;
     return {
-      formatId: f.format_id,
+      // Always merge best video at this height with best audio
+      formatId: `bestvideo[height=${h}]+bestaudio/best[height<=${h}]`,
       label,
       badge: 'video',
       size:  humanSize(f.filesize || f.filesize_approx) || `~${Math.round(h * 0.06)} MB`,
@@ -125,7 +104,6 @@ function buildFormats(info) {
     };
   });
 
-  // ── Audio-only: best audio format ────────────────────────────────────
   const audioFormats = formats.filter(f =>
     (!f.vcodec || f.vcodec === 'none') && f.acodec && f.acodec !== 'none'
   );
@@ -140,7 +118,6 @@ function buildFormats(info) {
     });
   }
 
-  // Fallback if we got nothing useful
   if (result.length === 0) {
     result.push(
       { formatId: 'bestvideo+bestaudio/best', label: 'Best Quality · MP4', badge: 'video', size: null, height: null },
@@ -153,13 +130,8 @@ function buildFormats(info) {
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
-/** Health check */
 app.get('/health', (_, res) => res.json({ status: 'ok', uptime: process.uptime() }));
 
-/**
- * GET /api/info?url=<media-url>
- * Returns JSON with title, source, duration, thumbnail, formats[].
- */
 app.get('/api/info', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'url query param is required' });
@@ -173,7 +145,6 @@ app.get('/api/info', async (req, res) => {
       '--dump-json',
       '--no-playlist',
       '--no-warnings',
-      '--flat-playlist',
       parsed.href,
     ]);
 
@@ -181,8 +152,8 @@ app.get('/api/info', async (req, res) => {
     const formats = buildFormats(info);
 
     return res.json({
-      title:     info.title     || 'Untitled',
-      source:    info.uploader  || info.channel || parsed.hostname.replace('www.', ''),
+      title:     info.title    || 'Untitled',
+      source:    info.uploader || info.channel || parsed.hostname.replace('www.', ''),
       duration:  fmtDuration(info.duration),
       thumbnail: info.thumbnail || null,
       formats,
@@ -194,9 +165,8 @@ app.get('/api/info', async (req, res) => {
 });
 
 /**
- * GET /api/download?url=<media-url>&formatId=<id>&filename=<name>
- * Streams the requested format directly to the client.
- * For audio-only, we post-process to MP3 via yt-dlp's built-in converter.
+ * Download endpoint.
+ * Downloads to a temp file (ffmpeg merges video+audio), then streams to client.
  */
 app.get('/api/download', async (req, res) => {
   const { url, formatId, filename } = req.query;
@@ -208,60 +178,64 @@ app.get('/api/download', async (req, res) => {
   try { parsed = new URL(url.startsWith('http') ? url : `https://${url}`); }
   catch { return res.status(400).json({ error: 'Invalid URL' }); }
 
-  const isAudio = formatId === 'bestaudio/best';
+  const isAudio      = formatId === 'bestaudio/best';
   const safeFilename = (filename || 'download').replace(/[^a-z0-9 _\-\.]/gi, '_');
-  const ext = isAudio ? 'mp3' : 'mp4';
+  const ext          = isAudio ? 'mp3' : 'mp4';
+  const tmpDir       = os.tmpdir();
+  const tmpBase      = path.join(tmpDir, `dl_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  const tmpFile      = `${tmpBase}.${ext}`;
 
   res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.${ext}"`);
   res.setHeader('Content-Type', isAudio ? 'audio/mpeg' : 'video/mp4');
 
-  const isWin = process.platform === 'win32';
+  const dlArgs = isAudio
+    ? [
+        '--no-playlist', '--no-warnings',
+        '-f', 'bestaudio/best',
+        '-x', '--audio-format', 'mp3', '--audio-quality', '0',
+        '-o', `${tmpBase}.%(ext)s`,
+        parsed.href,
+      ]
+    : [
+        '--no-playlist', '--no-warnings',
+        '-f', formatId,
+        '--merge-output-format', 'mp4',
+        '-o', tmpFile,
+        parsed.href,
+      ];
 
-  if (isAudio) {
-    const tmpDir  = os.tmpdir();
-    const tmpBase = path.join(tmpDir, `dl_${Date.now()}`);
-    const tmpFile = `${tmpBase}.mp3`;
+  try {
+    console.log(`[download] Starting: ${formatId} → ${safeFilename}.${ext}`);
+    await ytDlp(dlArgs);
 
-    const dlArgs = [
-      '--no-playlist', '--no-warnings',
-      '-f', 'bestaudio/best',
-      '-x', '--audio-format', 'mp3', '--audio-quality', '0',
-      '-o', `${tmpBase}.%(ext)s`,
-      parsed.href,
-    ];
-
-    try {
-      await ytDlp(dlArgs);
-      const stream = fs.createReadStream(tmpFile);
-      stream.pipe(res);
-      stream.on('end', () => fs.unlink(tmpFile, () => {}));
-      stream.on('error', e => { console.error(e); res.destroy(); });
-    } catch (err) {
-      console.error('[/api/download audio]', err.message);
-      if (!res.headersSent) res.status(422).json({ error: err.message });
+    if (!fs.existsSync(tmpFile)) {
+      throw new Error('Output file not found after download');
     }
-    return;
+
+    const stat = fs.statSync(tmpFile);
+    res.setHeader('Content-Length', stat.size);
+
+    const stream = fs.createReadStream(tmpFile);
+    stream.pipe(res);
+    stream.on('end', () => {
+      fs.unlink(tmpFile, () => {});
+      console.log(`[download] Done: ${safeFilename}.${ext}`);
+    });
+    stream.on('error', e => {
+      console.error('[download stream error]', e.message);
+      fs.unlink(tmpFile, () => {});
+      res.destroy();
+    });
+  } catch (err) {
+    console.error('[/api/download]', err.message);
+    fs.unlink(tmpFile, () => {});
+    if (!res.headersSent) res.status(422).json({ error: err.message });
   }
-
-  // Video: stream stdout directly
-  const cmd  = isWin ? 'python' : 'yt-dlp';
-  const argv = isWin
-    ? ['-m', 'yt_dlp', '--no-playlist', '--no-warnings', '-f', formatId, '-o', '-', parsed.href]
-    : ['--no-playlist', '--no-warnings', '-f', formatId, '-o', '-', parsed.href];
-
-  const proc = spawn(cmd, argv);
-  proc.stdout.pipe(res);
-  proc.stderr.on('data', d => console.error('[yt-dlp stderr]', d.toString().trim()));
-  proc.on('error', err => {
-    console.error('[/api/download spawn]', err.message);
-    if (!res.headersSent) res.status(500).json({ error: 'Failed to start download' });
-  });
-  req.on('close', () => proc.kill());
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n🟠 DropLoad backend running at http://localhost:${PORT}`);
-  console.log(`   GET /api/info?url=<media-url>                   → fetch formats`);
-  console.log(`   GET /api/download?url=<url>&formatId=<id>       → stream download\n`);
+  console.log(`   GET /api/info?url=<media-url>              -> fetch formats`);
+  console.log(`   GET /api/download?url=<url>&formatId=<id> -> download with audio\n`);
 });
