@@ -30,7 +30,6 @@
     }
 
     html { scroll-behavior: smooth; overflow-x: hidden; }
-
     body {
       background-color: var(--clr-bg);
       color: var(--clr-dark);
@@ -39,9 +38,7 @@
       line-height: 1.6;
       overflow-x: hidden;
     }
-
     a { text-decoration: none; color: inherit; }
-    img { max-width: 100%; height: auto; display: block; }
 
     /* ===== PRELOADER ===== */
     #preloader {
@@ -72,8 +69,8 @@
       transform: translateY(18px);
       animation: riseUp 0.25s cubic-bezier(0.4,0,0.2,1) forwards;
     }
-    @keyframes dropIn { to { opacity:1; transform: rotate(-30deg) scale(1); } from { opacity:0; transform: rotate(-50deg) scale(0.6);} }
-    @keyframes riseUp { to { opacity:1; transform: translateY(0); } }
+    @keyframes dropIn { to{opacity:1;transform:rotate(-30deg) scale(1)} from{opacity:0;transform:rotate(-50deg) scale(0.6)} }
+    @keyframes riseUp { to{opacity:1;transform:translateY(0)} }
 
     /* ===== NAVBAR ===== */
     .navbar {
@@ -82,7 +79,6 @@
       z-index: 9999;
       width: calc(100% - 48px);
       max-width: 800px;
-      transition: bottom var(--transition);
     }
     .navbar-inner {
       background: linear-gradient(180deg, #0a0a0a 0%, #232323 100%);
@@ -90,6 +86,7 @@
       border-radius: var(--radius-pill);
       padding: 6px 20px;
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      position: relative;
     }
     .nav-logo {
       display: flex; align-items: center; gap: 8px;
@@ -101,8 +98,7 @@
       width: 28px; height: 28px;
       background: var(--clr-accent);
       border-radius: 50% 50% 50% 6px;
-      transform: rotate(-25deg);
-      flex-shrink: 0;
+      transform: rotate(-25deg); flex-shrink: 0;
     }
     .nav-links { display: flex; align-items: center; gap: 4px; }
     .nav-link {
@@ -113,45 +109,29 @@
     }
     .nav-link:hover { color: var(--clr-accent); }
     .nav-link.active { color: var(--clr-white); background: rgba(255,255,255,0.08); }
-    .nav-cta {
-      background: var(--clr-accent); color: var(--clr-white);
-      font-size: 13px; font-weight: 600;
-      padding: 10px 20px; border-radius: var(--radius-pill);
-      transition: background var(--transition), transform var(--transition);
-      flex-shrink: 0; cursor: pointer; border: none; font-family: var(--font-body);
-    }
-    .nav-cta:hover { background: #c56a00; transform: scale(1.04); }
-
-    /* Mobile menu toggle */
     .nav-hamburger {
-      display: none;
-      flex-direction: column; gap: 4px;
-      cursor: pointer; padding: 8px;
-      background: none; border: none;
+      display: none; flex-direction: column; gap: 4px;
+      cursor: pointer; padding: 8px; background: none; border: none;
     }
     .nav-hamburger span {
       display: block; width: 18px; height: 2px;
       background: rgba(255,255,255,0.8); border-radius: 2px;
       transition: all 0.3s ease;
     }
-    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px,4px); }
     .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
-
-    /* Mobile dropdown */
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
     .mobile-menu {
       display: none;
       position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
       background: linear-gradient(180deg, #0a0a0a 0%, #232323 100%);
       border: 1px solid #3a3a3a;
-      border-radius: 20px;
-      padding: 12px;
+      border-radius: 20px; padding: 12px;
       flex-direction: column; gap: 4px;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a {
-      color: rgba(255,255,255,0.8);
-      font-size: 14px; font-weight: 400;
+      color: rgba(255,255,255,0.8); font-size: 14px;
       padding: 12px 16px; border-radius: 12px;
       transition: background var(--transition), color var(--transition);
     }
@@ -163,59 +143,36 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 100px 5% 120px;
-      position: relative; overflow: hidden;
-      text-align: center;
+      position: relative; overflow: hidden; text-align: center;
     }
-
     .hero::before {
       content: '';
       position: absolute; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 0;
     }
-
-    .blob {
-      position: absolute; border-radius: 50%; filter: blur(80px);
-      pointer-events: none; z-index: 0;
-    }
-    .blob-1 {
-      width: 500px; height: 500px;
-      background: rgba(226,117,0,0.12);
-      top: -100px; right: -100px;
-      animation: float1 8s ease-in-out infinite;
-    }
-    .blob-2 {
-      width: 350px; height: 350px;
-      background: rgba(20,22,23,0.06);
-      bottom: 0; left: -80px;
-      animation: float2 10s ease-in-out infinite;
-    }
+    .blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 500px; height: 500px; background: rgba(226,117,0,0.15); top: -100px; right: -100px; animation: float1 8s ease-in-out infinite; }
+    .blob-2 { width: 350px; height: 350px; background: rgba(20,22,23,0.06); bottom: 0; left: -80px; animation: float2 10s ease-in-out infinite; }
     @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(1.05)} }
     @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-30px)} }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--clr-white); border: 1px solid var(--clr-border);
-      border-radius: var(--radius-pill);
-      padding: 6px 16px;
+      border-radius: var(--radius-pill); padding: 6px 16px;
       font-size: 13px; font-weight: 500; color: var(--clr-grey);
       margin-bottom: 28px; position: relative; z-index: 1;
       opacity: 0; animation: fadeUp 0.6s 1.4s ease forwards;
     }
-    .hero-badge .dot-live {
-      width: 8px; height: 8px; background: #22c55e;
-      border-radius: 50%; animation: pulse 2s infinite;
-    }
+    .hero-badge .dot-live { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
 
     .hero-headline {
       font-family: var(--font-heading);
       font-size: clamp(3rem, 9vw, 8rem);
-      font-weight: 900;
-      letter-spacing: -4px;
-      line-height: 0.95;
-      color: var(--clr-dark);
-      margin-bottom: 24px;
+      font-weight: 900; letter-spacing: -4px; line-height: 0.95;
+      color: var(--clr-dark); margin-bottom: 24px;
       position: relative; z-index: 1;
       opacity: 0; animation: fadeUp 0.7s 1.6s ease forwards;
     }
@@ -230,57 +187,39 @@
       opacity: 0; animation: fadeUp 0.6s 1.85s ease forwards;
     }
 
-    @keyframes fadeUp {
-      from { opacity:0; transform: translateY(20px); }
-      to { opacity:1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ===== URL INPUT BOX ===== */
+    /* ===== URL INPUT ===== */
     .input-zone {
       width: 100%; max-width: 680px;
       position: relative; z-index: 2;
       opacity: 0; animation: fadeUp 0.6s 2s ease forwards;
     }
-
     .input-card {
-      background: var(--clr-white);
-      border: 1px solid var(--clr-border);
-      border-radius: 20px;
-      padding: 8px 8px 8px 20px;
+      background: var(--clr-white); border: 1px solid var(--clr-border);
+      border-radius: 20px; padding: 8px 8px 8px 20px;
       display: flex; align-items: center; gap: 10px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 8px 40px rgba(226,117,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
       transition: box-shadow var(--transition), border-color var(--transition);
     }
     .input-card:focus-within {
       border-color: var(--clr-accent);
-      box-shadow: 0 0 0 4px rgba(226,117,0,0.1), 0 8px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 0 0 4px rgba(226,117,0,0.12), 0 8px 40px rgba(0,0,0,0.1);
     }
     .input-card.invalid {
       border-color: #ef4444;
-      box-shadow: 0 0 0 4px rgba(239,68,68,0.1), 0 8px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 0 0 4px rgba(239,68,68,0.1);
       animation: shake 0.4s ease;
     }
-    @keyframes shake {
-      0%,100%{transform:translateX(0)}
-      20%{transform:translateX(-6px)}
-      40%{transform:translateX(6px)}
-      60%{transform:translateX(-4px)}
-      80%{transform:translateX(4px)}
-    }
-    .input-icon {
-      font-size: 18px; flex-shrink: 0; color: var(--clr-light-grey);
-      transition: color var(--transition);
-    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+    .input-icon { font-size: 18px; flex-shrink: 0; color: var(--clr-light-grey); transition: color var(--transition); }
     .input-card:focus-within .input-icon { color: var(--clr-accent); }
-
     .url-input {
       flex: 1; border: none; outline: none;
       font-family: var(--font-body); font-size: 15px;
-      color: var(--clr-dark); background: transparent;
-      min-width: 0;
+      color: var(--clr-dark); background: transparent; min-width: 0;
     }
     .url-input::placeholder { color: var(--clr-light-grey); }
-
     .paste-btn {
       background: none; border: 1px solid var(--clr-border);
       border-radius: 10px; padding: 8px 14px;
@@ -289,66 +228,50 @@
       transition: all var(--transition); white-space: nowrap; flex-shrink: 0;
     }
     .paste-btn:hover { border-color: var(--clr-accent); color: var(--clr-accent); }
-    .paste-btn:active { transform: scale(0.96); }
-
     .download-btn {
       background: var(--clr-dark); color: var(--clr-white);
-      border: none; border-radius: 13px;
-      padding: 14px 24px;
+      border: none; border-radius: 13px; padding: 14px 24px;
       font-family: var(--font-heading); font-size: 15px; font-weight: 700;
       cursor: pointer; white-space: nowrap; flex-shrink: 0;
       transition: background var(--transition), transform var(--transition);
-      display: flex; align-items: center; gap: 8px;
-      letter-spacing: -0.3px;
+      display: flex; align-items: center; gap: 8px; letter-spacing: -0.3px;
     }
     .download-btn:hover { background: var(--clr-accent); transform: scale(1.03); }
     .download-btn:active { transform: scale(0.98); }
     .download-btn:disabled { background: var(--clr-light-grey); cursor: not-allowed; transform: none; }
     .download-btn svg { width: 16px; height: 16px; }
 
-    /* Platform chips */
     .platform-row {
       display: flex; align-items: center; justify-content: center;
-      gap: 10px; flex-wrap: wrap;
-      margin-top: 20px;
+      gap: 10px; flex-wrap: wrap; margin-top: 20px;
       position: relative; z-index: 1;
       opacity: 0; animation: fadeUp 0.6s 2.15s ease forwards;
     }
-    .platform-label {
-      font-size: 12px; color: var(--clr-light-grey); font-weight: 500;
-      letter-spacing: 0.04em;
-    }
+    .platform-label { font-size: 12px; color: var(--clr-light-grey); font-weight: 500; letter-spacing: 0.04em; }
     .platform-chip {
       display: inline-flex; align-items: center; gap: 6px;
       background: var(--clr-white); border: 1px solid var(--clr-border);
       border-radius: var(--radius-pill); padding: 5px 12px;
       font-size: 12px; font-weight: 500; color: var(--clr-mid);
       transition: border-color var(--transition), color var(--transition), transform var(--transition);
-      cursor: default;
     }
     .platform-chip:hover { border-color: var(--clr-accent); color: var(--clr-accent); transform: translateY(-1px); }
     .platform-chip span { font-size: 14px; }
 
     /* ===== RESULT PANEL ===== */
     .result-panel {
-      width: 100%; max-width: 680px;
-      background: var(--clr-white);
-      border: 1px solid var(--clr-border);
-      border-radius: 20px;
-      margin-top: 16px;
-      overflow: hidden;
-      display: none;
+      width: 100%; background: var(--clr-white);
+      border: 1px solid var(--clr-border); border-radius: 20px;
+      margin-top: 16px; overflow: hidden; display: none;
       position: relative; z-index: 2;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      box-shadow: 0 8px 40px rgba(226,117,0,0.08);
       opacity: 0; transform: translateY(10px);
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
     .result-panel.visible { opacity: 1; transform: translateY(0); }
-
     .result-header {
       display: flex; align-items: center; gap: 16px;
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid var(--clr-border);
+      padding: 20px 20px 16px; border-bottom: 1px solid var(--clr-border);
     }
     .result-thumb {
       width: 64px; height: 64px; border-radius: 12px;
@@ -356,7 +279,6 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 28px; overflow: hidden;
     }
-    .result-thumb img { width: 100%; height: 100%; object-fit: cover; }
     .result-meta { flex: 1; min-width: 0; }
     .result-title {
       font-family: var(--font-heading); font-size: 15px; font-weight: 700;
@@ -368,41 +290,33 @@
       display: flex; align-items: center; gap: 6px;
     }
     .result-source .src-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--clr-accent); }
-
     .result-close {
       background: none; border: none; cursor: pointer;
       width: 32px; height: 32px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       color: var(--clr-light-grey); font-size: 18px;
-      transition: background var(--transition), color var(--transition);
-      flex-shrink: 0;
+      transition: background var(--transition), color var(--transition); flex-shrink: 0;
     }
     .result-close:hover { background: var(--clr-bg); color: var(--clr-dark); }
-
     .format-list { padding: 12px 20px; display: flex; flex-direction: column; gap: 8px; }
-
     .format-row {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 14px; border-radius: 12px;
       border: 1px solid var(--clr-border);
       transition: border-color var(--transition), background var(--transition);
-      cursor: pointer;
       animation: slideIn 0.3s ease both;
     }
-    @keyframes slideIn { from { opacity:0; transform: translateX(-8px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
     .format-row:hover { border-color: var(--clr-accent); background: rgba(226,117,0,0.04); }
-
     .format-info { display: flex; align-items: center; gap: 10px; }
     .format-badge {
-      font-size: 10px; font-weight: 700;
-      padding: 3px 8px; border-radius: 6px;
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
       background: var(--clr-dark); color: var(--clr-white);
       letter-spacing: 0.05em; text-transform: uppercase;
     }
     .format-badge.audio { background: var(--clr-accent); }
     .format-label { font-size: 14px; font-weight: 500; color: var(--clr-dark); }
     .format-size { font-size: 12px; color: var(--clr-light-grey); }
-
     .fmt-download-btn {
       display: flex; align-items: center; gap: 6px;
       background: var(--clr-dark); color: var(--clr-white);
@@ -414,32 +328,20 @@
     .fmt-download-btn:active { transform: scale(0.97); }
     .fmt-download-btn:disabled { background: var(--clr-light-grey); cursor: not-allowed; transform: none; }
 
-    /* ===== LOADING STATE ===== */
-    .loading-bar-wrap {
-      padding: 20px;
-      display: none;
-    }
+    /* ===== LOADING ===== */
+    .loading-bar-wrap { padding: 20px; display: none; }
     .loading-bar-wrap.active { display: block; }
     .loading-label { font-size: 13px; color: var(--clr-grey); margin-bottom: 10px; font-weight: 500; }
-    .loading-bar {
-      height: 4px; background: var(--clr-border); border-radius: 4px; overflow: hidden;
-    }
+    .loading-bar { height: 4px; background: var(--clr-border); border-radius: 4px; overflow: hidden; }
     .loading-bar-fill {
-      height: 100%; width: 0%; background: linear-gradient(90deg, var(--clr-accent), var(--clr-accent2));
-      border-radius: 4px;
-      animation: loadAnim 2.2s ease-in-out infinite;
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--clr-accent), var(--clr-accent2));
+      border-radius: 4px; animation: loadAnim 2.2s ease-in-out infinite;
     }
-    @keyframes loadAnim {
-      0% { width: 0%; margin-left: 0; }
-      50% { width: 60%; margin-left: 20%; }
-      100% { width: 0%; margin-left: 100%; }
-    }
+    @keyframes loadAnim { 0%{width:0%;margin-left:0} 50%{width:60%;margin-left:20%} 100%{width:0%;margin-left:100%} }
 
     /* ===== HOW IT WORKS ===== */
-    #how {
-      padding: 80px 5%;
-      position: relative;
-    }
+    #how { padding: 80px 5%; position: relative; }
     .section-label {
       font-size: 13px; font-weight: 500; letter-spacing: 0.08em;
       text-transform: uppercase; color: var(--clr-accent); margin-bottom: 12px;
@@ -451,218 +353,69 @@
       color: var(--clr-dark); margin-bottom: 52px;
     }
     .section-title .muted { color: var(--clr-light-grey); }
-
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
     .step-card {
       background: var(--clr-white); border: 1px solid var(--clr-border);
       border-radius: var(--radius-card); padding: 32px 28px;
-      box-shadow: var(--shadow-card);
-      position: relative; overflow: hidden;
+      box-shadow: var(--shadow-card); position: relative; overflow: hidden;
       transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
-      cursor: default;
     }
-    .step-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-      border-color: var(--clr-accent);
-    }
-    .step-num {
-      font-size: 12px; color: var(--clr-light-grey); font-weight: 600;
-      letter-spacing: 0.1em; margin-bottom: 16px;
-    }
-    .step-icon {
-      font-size: 32px; margin-bottom: 14px;
-      transition: transform var(--transition);
-    }
+    .step-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 60px rgba(226,117,0,0.12); border-color: var(--clr-accent); }
+    .step-num { font-size: 12px; color: var(--clr-light-grey); font-weight: 600; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .step-icon { font-size: 32px; margin-bottom: 14px; transition: transform var(--transition); }
     .step-card:hover .step-icon { transform: scale(1.15) rotate(-5deg); }
-    .step-name {
-      font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;
-      letter-spacing: -0.5px; color: var(--clr-dark); margin-bottom: 8px;
-    }
+    .step-name { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px; color: var(--clr-dark); margin-bottom: 8px; }
     .step-desc { font-size: 14px; color: var(--clr-grey); line-height: 1.6; }
+    .step-card::after { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border: 2px solid rgba(226,117,0,0.12); border-radius: 50%; }
 
-    .step-card::after {
-      content: '';
-      position: absolute; top: -20px; right: -20px;
-      width: 80px; height: 80px;
-      border: 2px solid rgba(226,117,0,0.12);
-      border-radius: 50%;
-    }
-
-    /* ===== DARK FEATURES BAND ===== */
+    /* ===== FEATURES ===== */
     #features {
-      background: var(--clr-dark);
-      color: var(--clr-white);
-      border-radius: 32px;
-      margin: 0 24px;
-      padding: 80px 7%;
+      background: var(--clr-dark); color: var(--clr-white);
+      border-radius: 32px; margin: 0 24px; padding: 80px 7%;
     }
-    .features-top {
-      display: flex; justify-content: space-between;
-      align-items: flex-end; margin-bottom: 52px;
-      gap: 24px; flex-wrap: wrap;
-    }
-    .features-heading {
-      font-family: var(--font-heading);
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800; letter-spacing: -2px; line-height: 1.1;
-    }
+    .features-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; gap: 24px; flex-wrap: wrap; }
+    .features-heading { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
     .features-heading .accent { color: var(--clr-accent); }
     .features-sub { font-size: 14px; color: rgba(255,255,255,0.5); max-width: 260px; line-height: 1.6; }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .feat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px; padding: 28px;
       transition: background var(--transition), border-color var(--transition), transform var(--transition);
-      cursor: default;
     }
-    .feat-card:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(226,117,0,0.4);
-      transform: scale(1.03);
-    }
+    .feat-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(226,117,0,0.4); transform: scale(1.03); }
     .feat-icon { font-size: 28px; margin-bottom: 14px; transition: transform var(--transition); }
     .feat-card:hover .feat-icon { transform: scale(1.2) rotate(-5deg); }
-    .feat-name {
-      font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700;
-      letter-spacing: -0.3px; color: var(--clr-white); margin-bottom: 8px;
-    }
+    .feat-name { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.3px; color: var(--clr-white); margin-bottom: 8px; }
     .feat-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
 
-    /* ===== SUPPORTED PLATFORMS MARQUEE ===== */
-    #platforms {
-      padding: 60px 0;
-      overflow: hidden;
-    }
-    .marquee-label {
-      text-align: center; font-size: 13px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--clr-light-grey); margin-bottom: 28px;
-    }
-    .marquee-track {
-      display: flex; gap: 14px;
-      animation: marquee 20s linear infinite;
-      width: max-content;
-    }
+    /* ===== MARQUEE ===== */
+    #platforms { padding: 60px 0; overflow: hidden; }
+    .marquee-label { text-align: center; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--clr-light-grey); margin-bottom: 28px; }
+    .marquee-track { display: flex; gap: 14px; animation: marquee 20s linear infinite; width: max-content; }
     .marquee-track:hover { animation-play-state: paused; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
     .platform-card {
       background: var(--clr-white); border: 1px solid var(--clr-border);
       border-radius: 16px; padding: 14px 24px;
       display: flex; align-items: center; gap: 10px;
       white-space: nowrap; flex-shrink: 0;
       font-size: 14px; font-weight: 600; color: var(--clr-mid);
-      box-shadow: 2px 2px 20px rgba(234,234,234,0.6);
       transition: border-color var(--transition), color var(--transition), transform var(--transition);
-      cursor: default;
     }
     .platform-card:hover { border-color: var(--clr-accent); color: var(--clr-accent); transform: translateY(-2px); }
     .platform-card span { font-size: 20px; }
 
-    /* ===== PRICING ===== */
-    #pricing {
-      padding: 80px 5%;
-    }
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px; max-width: 900px; margin: 0 auto;
-    }
-    .price-card {
-      background: var(--clr-white); border: 1px solid var(--clr-border);
-      border-radius: var(--radius-card); padding: 36px 32px;
-      box-shadow: var(--shadow-card);
-      transition: transform var(--transition), box-shadow var(--transition);
-      position: relative;
-    }
-    .price-card:hover { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(0,0,0,0.12); }
-    .price-card.featured {
-      background: var(--clr-dark); border-color: transparent;
-      color: var(--clr-white);
-    }
-    .price-badge {
-      display: inline-block;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 4px 10px;
-      background: var(--clr-accent); color: white;
-      border-radius: var(--radius-pill); margin-bottom: 20px;
-    }
-    .price-name {
-      font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700;
-      letter-spacing: -0.3px; margin-bottom: 4px;
-    }
-    .price-card.featured .price-name { color: var(--clr-white); }
-    .price-tagline { font-size: 13px; color: var(--clr-grey); margin-bottom: 24px; }
-    .price-card.featured .price-tagline { color: rgba(255,255,255,0.5); }
-    .price-amount {
-      font-family: var(--font-heading); font-size: 3rem; font-weight: 900;
-      letter-spacing: -3px; line-height: 1; margin-bottom: 6px;
-    }
-    .price-card.featured .price-amount { color: var(--clr-white); }
-    .price-amount .accent { color: var(--clr-accent); }
-    .price-period { font-size: 13px; color: var(--clr-light-grey); margin-bottom: 28px; }
-    .price-card.featured .price-period { color: rgba(255,255,255,0.4); }
-    .price-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-    .price-features li {
-      font-size: 14px; color: var(--clr-grey); display: flex; align-items: center; gap: 8px;
-    }
-    .price-card.featured .price-features li { color: rgba(255,255,255,0.7); }
-    .price-features li::before { content: "→"; color: var(--clr-accent); font-size: 12px; }
-    .price-cta {
-      display: block; text-align: center; width: 100%;
-      padding: 13px; border-radius: 12px;
-      font-family: var(--font-heading); font-size: 14px; font-weight: 700;
-      cursor: pointer; border: none;
-      transition: all var(--transition);
-    }
-    .price-cta.light { background: var(--clr-bg); color: var(--clr-dark); }
-    .price-cta.light:hover { background: var(--clr-dark); color: white; }
-    .price-cta.dark { background: var(--clr-accent); color: white; }
-    .price-cta.dark:hover { background: #c56a00; transform: scale(1.02); }
-    .price-cta:active { transform: scale(0.98) !important; }
-
     /* ===== FAQ ===== */
-    #faq {
-      background: var(--clr-white); border-radius: 32px; margin: 0 24px;
-      padding: 80px 7%;
-    }
+    #faq { background: var(--clr-white); border-radius: 32px; margin: 0 24px; padding: 80px 7%; }
     .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .faq-item {
-      border: 1px solid var(--clr-border); border-radius: 16px; padding: 24px;
-      cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-    }
+    .faq-item { border: 1px solid var(--clr-border); border-radius: 16px; padding: 24px; cursor: pointer; transition: border-color var(--transition), background var(--transition); }
     .faq-item:hover { border-color: var(--clr-accent); background: rgba(226,117,0,0.02); }
     .faq-item.open { border-color: var(--clr-accent); background: rgba(226,117,0,0.03); }
-    .faq-q {
-      font-family: var(--font-heading); font-size: 1rem; font-weight: 700;
-      letter-spacing: -0.3px; color: var(--clr-dark); margin-bottom: 8px;
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
-    }
-    .faq-toggle {
-      color: var(--clr-accent); font-size: 20px; flex-shrink: 0;
-      line-height: 1; font-weight: 300;
-      transition: transform 0.3s ease;
-      display: inline-block;
-    }
+    .faq-q { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; letter-spacing: -0.3px; color: var(--clr-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .faq-toggle { color: var(--clr-accent); font-size: 20px; flex-shrink: 0; line-height: 1; font-weight: 300; transition: transform 0.3s ease; display: inline-block; }
     .faq-item.open .faq-toggle { transform: rotate(45deg); }
-    .faq-a {
-      font-size: 14px; color: var(--clr-grey); line-height: 1.6;
-      max-height: 0; overflow: hidden;
-      transition: max-height 0.4s ease, opacity 0.3s ease;
-      opacity: 0;
-    }
+    .faq-a { font-size: 14px; color: var(--clr-grey); line-height: 1.6; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; opacity: 0; }
     .faq-item.open .faq-a { max-height: 200px; opacity: 1; }
 
     /* ===== FOOTER ===== */
@@ -671,100 +424,26 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 16px;
     }
-    .footer-brand {
-      font-family: var(--font-heading); font-size: 18px; font-weight: 800;
-      letter-spacing: -1px; color: var(--clr-dark);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .footer-brand .dot {
-      width: 22px; height: 22px; background: var(--clr-accent);
-      border-radius: 50% 50% 50% 5px; transform: rotate(-25deg);
-    }
+    .footer-brand { font-family: var(--font-heading); font-size: 18px; font-weight: 800; letter-spacing: -1px; color: var(--clr-dark); display: flex; align-items: center; gap: 8px; }
+    .footer-brand .dot { width: 22px; height: 22px; background: var(--clr-accent); border-radius: 50% 50% 50% 5px; transform: rotate(-25deg); }
     .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
     .footer-links a { font-size: 14px; color: var(--clr-grey); transition: color var(--transition); }
     .footer-links a:hover { color: var(--clr-accent); }
     .footer-copy { font-size: 13px; color: var(--clr-light-grey); }
 
-    /* ===== REVEAL ===== */
+    /* ===== UTILS ===== */
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ===== TOAST ===== */
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
       background: var(--clr-dark); color: var(--clr-white);
       font-size: 13px; font-weight: 500; padding: 12px 20px;
       border-radius: var(--radius-pill); z-index: 9998;
       opacity: 0; transition: all 0.3s ease; pointer-events: none;
-      display: flex; align-items: center; gap: 8px;
       white-space: nowrap;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* ===== MODAL ===== */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px);
-      z-index: 99998;
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: var(--clr-white);
-      border-radius: 28px;
-      padding: 40px;
-      max-width: 440px; width: 100%;
-      transform: scale(0.9) translateY(20px);
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-      position: relative;
-    }
-    .modal-overlay.open .modal { transform: scale(1) translateY(0); }
-    .modal-close {
-      position: absolute; top: 16px; right: 16px;
-      background: var(--clr-bg); border: none;
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 16px; color: var(--clr-grey);
-      transition: background var(--transition), color var(--transition);
-    }
-    .modal-close:hover { background: var(--clr-dark); color: white; }
-    .modal-icon { font-size: 48px; margin-bottom: 16px; }
-    .modal-title {
-      font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800;
-      letter-spacing: -1px; color: var(--clr-dark); margin-bottom: 8px;
-    }
-    .modal-sub { font-size: 14px; color: var(--clr-grey); margin-bottom: 28px; line-height: 1.6; }
-    .modal-input {
-      width: 100%; padding: 14px 16px;
-      border: 1.5px solid var(--clr-border); border-radius: 12px;
-      font-family: var(--font-body); font-size: 15px;
-      color: var(--clr-dark); outline: none;
-      transition: border-color var(--transition), box-shadow var(--transition);
-      margin-bottom: 10px;
-    }
-    .modal-input:focus { border-color: var(--clr-accent); box-shadow: 0 0 0 3px rgba(226,117,0,0.1); }
-    .modal-submit {
-      width: 100%; padding: 14px;
-      background: var(--clr-accent); color: white;
-      border: none; border-radius: 12px;
-      font-family: var(--font-heading); font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: background var(--transition), transform var(--transition);
-      margin-top: 8px;
-    }
-    .modal-submit:hover { background: #c56a00; transform: scale(1.02); }
-    .modal-submit:active { transform: scale(0.98); }
-    .modal-note { font-size: 12px; color: var(--clr-light-grey); text-align: center; margin-top: 12px; }
-
-    /* ===== URL validation indicator ===== */
-    .url-valid-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      flex-shrink: 0; opacity: 0;
-      transition: opacity 0.3s ease, background 0.3s ease;
-    }
+    .url-valid-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; opacity: 0; transition: opacity 0.3s ease, background 0.3s ease; }
     .url-valid-dot.show { opacity: 1; }
     .url-valid-dot.valid { background: #22c55e; }
     .url-valid-dot.invalid { background: #ef4444; }
@@ -781,10 +460,8 @@
       .download-btn { width: 100%; justify-content: center; }
       footer { flex-direction: column; align-items: flex-start; }
     }
-
     @media (max-width: 480px) {
       .paste-btn { display: none; }
-      .price-cta { font-size: 13px; padding: 11px; }
     }
   </style>
 </head>
@@ -801,23 +478,9 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- PRO MODAL -->
-<div class="modal-overlay" id="proModal">
-  <div class="modal">
-    <button class="modal-close" id="modalClose">✕</button>
-    <div class="modal-icon">🚀</div>
-    <h2 class="modal-title">Go Pro Today</h2>
-    <p class="modal-sub">Unlock unlimited 4K downloads, 50+ platforms, batch mode, and API access — all for ₹149/mo.</p>
-    <input type="email" class="modal-input" id="modalEmail" placeholder="your@email.com" />
-    <input type="text" class="modal-input" id="modalName" placeholder="Your name (optional)" />
-    <button class="modal-submit" id="modalSubmit">Start Pro — ₹149/mo →</button>
-    <p class="modal-note">Cancel anytime · Secure payment · Instant access</p>
-  </div>
-</div>
-
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
-  <div class="navbar-inner" style="position:relative;">
+  <div class="navbar-inner">
     <a href="#hero" class="nav-logo">
       <div class="dot"></div>
       DropLoad
@@ -825,17 +488,14 @@
     <div class="nav-links" id="navLinks">
       <a href="#how" class="nav-link" data-section="how">How it works</a>
       <a href="#features" class="nav-link" data-section="features">Features</a>
-      <a href="#pricing" class="nav-link" data-section="pricing">Pricing</a>
       <a href="#faq" class="nav-link" data-section="faq">FAQ</a>
     </div>
     <button class="nav-hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
-    <button class="nav-cta" id="navCta">Get Pro →</button>
     <div class="mobile-menu" id="mobileMenu">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </div>
   </div>
@@ -845,23 +505,17 @@
 <section class="hero" id="hero">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
-
   <div class="hero-badge">
     <div class="dot-live"></div>
     Free · No signup · No watermark
   </div>
-
   <h1 class="hero-headline">
     Download<br>
     <span class="accent">Anything.</span><br>
     <span class="muted">Instantly.</span>
   </h1>
+  <p class="hero-sub">Paste a YouTube link — videos, Shorts, playlists, or music — and get your media in seconds.</p>
 
-  <p class="hero-sub">
-    Paste a link from YouTube, Instagram, X, TikTok, or 50+ other platforms — get your media in seconds.
-  </p>
-
-  <!-- URL INPUT -->
   <div class="input-zone" id="inputZone">
     <div class="input-card" id="inputCard">
       <div class="input-icon">🔗</div>
@@ -869,20 +523,14 @@
       <div class="url-valid-dot" id="urlDot"></div>
       <button class="paste-btn" id="pasteBtn">⌘ Paste</button>
       <button class="download-btn" id="downloadBtn">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 2v8M5 7l3 3 3-3M2 12h12"/>
-        </svg>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg>
         Fetch
       </button>
     </div>
-
-    <!-- Loading -->
     <div class="loading-bar-wrap" id="loadingBar">
       <div class="loading-label" id="loadingLabel">Fetching media info…</div>
       <div class="loading-bar"><div class="loading-bar-fill"></div></div>
     </div>
-
-    <!-- Result Panel -->
     <div class="result-panel" id="resultPanel">
       <div class="result-header">
         <div class="result-thumb" id="resultThumb">🎬</div>
@@ -895,21 +543,17 @@
             <span id="resultDuration">–</span>
           </div>
         </div>
-        <button class="result-close" id="resultClose" title="Close">✕</button>
+        <button class="result-close" id="resultClose">✕</button>
       </div>
       <div class="format-list" id="formatList"></div>
     </div>
   </div>
 
-  <!-- Platform chips -->
   <div class="platform-row">
     <span class="platform-label">Works with</span>
     <span class="platform-chip"><span>▶</span> YouTube</span>
-    <span class="platform-chip"><span>📸</span> Instagram</span>
-    <span class="platform-chip"><span>🎵</span> TikTok</span>
-    <span class="platform-chip"><span>🐦</span> X / Twitter</span>
-    <span class="platform-chip"><span>🎙</span> Spotify</span>
-    <span class="platform-chip">+50 more</span>
+    <span class="platform-chip"><span>🎬</span> YouTube Shorts</span>
+    <span class="platform-chip"><span>🎵</span> YouTube Music</span>
   </div>
 </section>
 
@@ -922,7 +566,7 @@
       <div class="step-num">Step 01</div>
       <div class="step-icon">🔗</div>
       <div class="step-name">Paste the Link</div>
-      <p class="step-desc">Copy the URL from your browser or app and paste it into the input above — or use the Paste button.</p>
+      <p class="step-desc">Copy the URL from your browser or app and paste it into the input above — or tap the Paste button.</p>
     </div>
     <div class="step-card reveal" style="transition-delay:0.1s">
       <div class="step-num">Step 02</div>
@@ -934,27 +578,27 @@
       <div class="step-num">Step 03</div>
       <div class="step-icon">⬇️</div>
       <div class="step-name">Download & Done</div>
-      <p class="step-desc">Hit download and the file lands straight in your device. No ads, no waiting, no account needed.</p>
+      <p class="step-desc">Hit download and the file lands straight on your device. No ads, no waiting, no account needed.</p>
     </div>
   </div>
 </section>
 
-<!-- FEATURES (DARK BAND) -->
+<!-- FEATURES -->
 <section id="features">
   <div class="features-top">
     <div>
-      <p class="section-label" style="color:rgba(226,117,0,0.9);margin-bottom:12px">Features</p>
-      <h2 class="features-heading reveal" style="color:var(--clr-white)">
+      <p class="section-label" style="color:rgba(168,85,247,0.9);margin-bottom:12px">Features</p>
+      <h2 class="features-heading reveal">
         Built for<br><span class="accent">speed.</span> Made to<br>feel <span style="color:rgba(255,255,255,0.3)">effortless.</span>
       </h2>
     </div>
-    <p class="features-sub">No bloat. No dark patterns. Just the stuff that actually matters when you need your media now.</p>
+    <p class="features-sub">No bloat. No dark patterns. Just what matters when you need your media now.</p>
   </div>
   <div class="features-grid">
     <div class="feat-card reveal">
       <div class="feat-icon">🚀</div>
       <div class="feat-name">Blazing Fast</div>
-      <p class="feat-desc">Our servers process your link in under 2 seconds. Real speed, no spinner theatre.</p>
+      <p class="feat-desc">Links are processed in under 2 seconds. Real speed, no spinner theatre.</p>
     </div>
     <div class="feat-card reveal" style="transition-delay:0.08s">
       <div class="feat-icon">🎞</div>
@@ -964,68 +608,30 @@
     <div class="feat-card reveal" style="transition-delay:0.16s">
       <div class="feat-icon">🎧</div>
       <div class="feat-name">Audio Extraction</div>
-      <p class="feat-desc">Rip MP3 or M4A audio from any video. Perfect for podcasts, music, and lectures.</p>
+      <p class="feat-desc">Rip MP3 audio from any video. Perfect for podcasts, music, and lectures.</p>
     </div>
     <div class="feat-card reveal" style="transition-delay:0.24s">
       <div class="feat-icon">🔒</div>
       <div class="feat-name">Private by Default</div>
-      <p class="feat-desc">We never store your links or downloaded files. Everything is processed and purged instantly.</p>
+      <p class="feat-desc">We never store your links or files. Everything is processed and purged instantly.</p>
     </div>
     <div class="feat-card reveal" style="transition-delay:0.32s">
       <div class="feat-icon">📱</div>
       <div class="feat-name">Works Everywhere</div>
-      <p class="feat-desc">Mobile, tablet, desktop — the UI adapts. No app install required ever.</p>
+      <p class="feat-desc">Mobile, tablet, desktop — the UI adapts. No app install ever required.</p>
     </div>
     <div class="feat-card reveal" style="transition-delay:0.40s">
-      <div class="feat-icon">⚙️</div>
-      <div class="feat-name">API Access</div>
-      <p class="feat-desc">Pro users get a clean REST API to integrate DropLoad into their own tools.</p>
+      <div class="feat-icon">▶️</div>
+      <div class="feat-name">All YouTube Types</div>
+      <p class="feat-desc">Videos, Shorts, Music, Live streams, Podcasts — if it's on YouTube, you can download it.</p>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE PLATFORMS -->
+<!-- MARQUEE -->
 <section id="platforms">
-  <p class="marquee-label">50+ Supported Platforms</p>
+  <p class="marquee-label">All YouTube Content Types Supported</p>
   <div class="marquee-track" id="marqueeTrack"></div>
-</section>
-
-<!-- PRICING -->
-<section id="pricing">
-  <p class="section-label reveal" style="text-align:center">Pricing</p>
-  <h2 class="section-title reveal" style="text-align:center;margin-bottom:48px">Simple &<br><span class="muted">transparent.</span></h2>
-  <div class="pricing-grid">
-    <div class="price-card reveal">
-      <div class="price-name">Free</div>
-      <div class="price-tagline">All the basics, always free.</div>
-      <div class="price-amount">₹<span class="accent">0</span></div>
-      <div class="price-period">forever</div>
-      <ul class="price-features">
-        <li>Up to 720p video quality</li>
-        <li>MP3 audio extraction</li>
-        <li>10 downloads / day</li>
-        <li>YouTube, Instagram, TikTok</li>
-        <li>No watermark</li>
-      </ul>
-      <button class="price-cta light" id="freeBtn">Start Free</button>
-    </div>
-    <div class="price-card featured reveal" style="transition-delay:0.1s">
-      <div class="price-badge">Most Popular</div>
-      <div class="price-name">Pro</div>
-      <div class="price-tagline">For power users and creators.</div>
-      <div class="price-amount">₹<span class="accent">149</span></div>
-      <div class="price-period">per month · cancel anytime</div>
-      <ul class="price-features">
-        <li>Up to 4K + HDR downloads</li>
-        <li>Unlimited downloads</li>
-        <li>50+ supported platforms</li>
-        <li>Batch download (up to 10)</li>
-        <li>Priority processing queue</li>
-        <li>REST API access</li>
-      </ul>
-      <button class="price-cta dark" id="proBtn">Get Pro →</button>
-    </div>
-  </div>
 </section>
 
 <!-- FAQ -->
@@ -1044,10 +650,9 @@
   <div class="footer-links">
     <a href="#">Privacy</a>
     <a href="#">Terms</a>
-    <a href="#">API Docs</a>
     <a href="#">Support</a>
   </div>
-  <p class="footer-copy">© 2025 DropLoad · Made with ☕ and orange pixels</p>
+  <p class="footer-copy">© 2026 DropLoad · Free forever</p>
 </footer>
 
 <script>
@@ -1071,30 +676,25 @@
   /* ---- SCROLL REVEAL ---- */
   (function() {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
-      });
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   })();
 
-  /* ---- ACTIVE NAV LINKS ON SCROLL ---- */
+  /* ---- ACTIVE NAV ---- */
   (function() {
-    const sections = ['hero', 'how', 'features', 'pricing', 'faq'];
+    const sections = ['hero','how','features','faq'];
     const navLinks = document.querySelectorAll('.nav-link[data-section]');
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           navLinks.forEach(l => l.classList.remove('active'));
-          const active = document.querySelector(`.nav-link[data-section="${e.target.id}"]`);
-          if (active) active.classList.add('active');
+          const a = document.querySelector(`.nav-link[data-section="${e.target.id}"]`);
+          if (a) a.classList.add('active');
         }
       });
     }, { threshold: 0.4 });
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) io.observe(el);
-    });
+    sections.forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
   })();
 
   /* ---- TOAST ---- */
@@ -1106,7 +706,7 @@
     t._timer = setTimeout(() => t.classList.remove('show'), duration);
   }
 
-  /* ---- MOBILE HAMBURGER ---- */
+  /* ---- HAMBURGER ---- */
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
   hamburger.addEventListener('click', () => {
@@ -1114,96 +714,36 @@
     mobileMenu.classList.toggle('open');
   });
   mobileMenu.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      hamburger.classList.remove('open');
-      mobileMenu.classList.remove('open');
-    });
+    a.addEventListener('click', () => { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); });
   });
 
-  /* ---- PRO MODAL ---- */
-  function openModal() {
-    document.getElementById('proModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal() {
-    document.getElementById('proModal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  document.getElementById('navCta').addEventListener('click', openModal);
-  document.getElementById('proBtn').addEventListener('click', openModal);
-  document.getElementById('modalClose').addEventListener('click', closeModal);
-  document.getElementById('proModal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('proModal')) closeModal();
-  });
-  document.getElementById('freeBtn').addEventListener('click', () => {
-    document.getElementById('urlInput').focus();
-    document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
-    showToast('🎉 You\'re already on the free plan — start by pasting a link!');
-  });
-  document.getElementById('modalSubmit').addEventListener('click', () => {
-    const email = document.getElementById('modalEmail').value.trim();
-    if (!email || !email.includes('@')) {
-      document.getElementById('modalEmail').style.borderColor = '#ef4444';
-      document.getElementById('modalEmail').focus();
-      showToast('⚠️ Please enter a valid email');
-      return;
-    }
-    document.getElementById('modalEmail').style.borderColor = '';
-    document.getElementById('modalSubmit').textContent = '✅ Request received!';
-    document.getElementById('modalSubmit').style.background = '#22c55e';
-    setTimeout(() => {
-      closeModal();
-      showToast('🚀 Welcome to Pro! Check your email.', 3000);
-      document.getElementById('modalSubmit').textContent = 'Start Pro — ₹149/mo →';
-      document.getElementById('modalSubmit').style.background = '';
-      document.getElementById('modalEmail').value = '';
-      document.getElementById('modalName').value = '';
-    }, 1200);
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-  /* ---- PASTE BUTTON ---- */
+  /* ---- PASTE ---- */
   document.getElementById('pasteBtn').addEventListener('click', async () => {
     try {
       const text = await navigator.clipboard.readText();
       document.getElementById('urlInput').value = text;
       validateUrl(text);
       showToast('📋 Link pasted!');
-    } catch {
-      showToast('⚠️ Clipboard access denied — paste manually');
-    }
+    } catch { showToast('⚠️ Clipboard access denied — paste manually'); }
   });
 
   /* ---- URL VALIDATION ---- */
   function isValidUrl(str) {
-    try {
-      const url = new URL(str.startsWith('http') ? str : 'https://' + str);
-      return url.hostname.includes('.');
-    } catch { return false; }
+    try { const url = new URL(str.startsWith('http') ? str : 'https://' + str); return url.hostname.includes('.'); }
+    catch { return false; }
   }
-
   function validateUrl(val) {
     const dot = document.getElementById('urlDot');
     if (!val) { dot.className = 'url-valid-dot'; return; }
-    if (isValidUrl(val)) {
-      dot.className = 'url-valid-dot show valid';
-    } else {
-      dot.className = 'url-valid-dot show invalid';
-    }
+    dot.className = isValidUrl(val) ? 'url-valid-dot show valid' : 'url-valid-dot show invalid';
   }
-
   document.getElementById('urlInput').addEventListener('input', (e) => {
     validateUrl(e.target.value);
-    if (document.getElementById('inputCard').classList.contains('invalid')) {
-      document.getElementById('inputCard').classList.remove('invalid');
-    }
+    document.getElementById('inputCard').classList.remove('invalid');
   });
 
-  /* ---- REAL BACKEND INTEGRATION ---- */
-  // Change this if your backend runs on a different port/host
+  /* ---- BACKEND ---- */
   const API_BASE = 'https://dropload-production.up.railway.app';
-
-  // Stores the last fetched URL so download buttons can reference it
   let _currentUrl = '';
 
   function renderFormats(formats) {
@@ -1222,50 +762,34 @@
         <button class="fmt-download-btn" data-format-id="${encodeURIComponent(f.formatId)}" data-label="${encodeURIComponent(f.label)}">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg>
           Download
-        </button>
-      `;
+        </button>`;
       list.appendChild(row);
     });
-
-    // Wire up download buttons
-    list.querySelectorAll('.fmt-download-btn').forEach(btn => {
-      btn.addEventListener('click', () => triggerDownload(btn));
-    });
+    list.querySelectorAll('.fmt-download-btn').forEach(btn => btn.addEventListener('click', () => triggerDownload(btn)));
   }
 
   function triggerDownload(btn) {
     const formatId = decodeURIComponent(btn.dataset.formatId);
     const label    = decodeURIComponent(btn.dataset.label);
-    const url      = _currentUrl;
-    if (!url || !formatId) return;
-
+    if (!_currentUrl || !formatId) return;
     const orig = btn.innerHTML;
     btn.innerHTML = '⏳ Starting…';
     btn.disabled = true;
     document.querySelectorAll('.fmt-download-btn').forEach(b => { if (b !== btn) b.disabled = true; });
-
-    // Trigger browser download by navigating to the stream endpoint
     const safeTitle = document.getElementById('resultTitle').textContent.slice(0, 60);
-    const dlUrl = `${API_BASE}/api/download?url=${encodeURIComponent(url)}&formatId=${encodeURIComponent(formatId)}&filename=${encodeURIComponent(safeTitle)}`;
-
+    const dlUrl = `${API_BASE}/api/download?url=${encodeURIComponent(_currentUrl)}&formatId=${encodeURIComponent(formatId)}&filename=${encodeURIComponent(safeTitle)}`;
     const anchor = document.createElement('a');
-    anchor.href = dlUrl;
-    anchor.download = '';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-
+    anchor.href = dlUrl; anchor.download = '';
+    document.body.appendChild(anchor); anchor.click(); document.body.removeChild(anchor);
     showToast(`⬇️ Downloading ${label}…`, 3000);
-
     setTimeout(() => {
-      btn.innerHTML = orig;
-      btn.disabled = false;
+      btn.innerHTML = orig; btn.disabled = false;
       document.querySelectorAll('.fmt-download-btn').forEach(b => b.disabled = false);
     }, 2500);
   }
 
   function loadingLabels() {
-    const msgs = ['Fetching media info…', 'Parsing stream URLs…', 'Detecting formats…', 'Almost there…'];
+    const msgs = ['Fetching media info…','Parsing stream URLs…','Detecting formats…','Almost there…'];
     let i = 0;
     const el = document.getElementById('loadingLabel');
     return setInterval(() => { el.textContent = msgs[i++ % msgs.length]; }, 700);
@@ -1273,22 +797,13 @@
 
   const downloadBtn = document.getElementById('downloadBtn');
   const resultPanel = document.getElementById('resultPanel');
-  const loadBar = document.getElementById('loadingBar');
+  const loadBar     = document.getElementById('loadingBar');
 
   downloadBtn.addEventListener('click', async () => {
     const url = document.getElementById('urlInput').value.trim();
-    if (!url) {
-      document.getElementById('inputCard').classList.add('invalid');
-      showToast('⚠️ Please paste a link first');
-      return;
-    }
-    if (!isValidUrl(url)) {
-      document.getElementById('inputCard').classList.add('invalid');
-      showToast('⚠️ That doesn\'t look like a valid URL');
-      return;
-    }
+    if (!url) { document.getElementById('inputCard').classList.add('invalid'); showToast('⚠️ Please paste a link first'); return; }
+    if (!isValidUrl(url)) { document.getElementById('inputCard').classList.add('invalid'); showToast('⚠️ That doesn\'t look like a valid URL'); return; }
 
-    // Reset state
     resultPanel.classList.remove('visible');
     resultPanel.style.display = 'none';
     loadBar.classList.add('active');
@@ -1296,7 +811,6 @@
     downloadBtn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg> Fetching…`;
 
     const interval = loadingLabels();
-
     try {
       const resp = await fetch(`${API_BASE}/api/info?url=${encodeURIComponent(url)}`);
       const data = await resp.json();
@@ -1305,27 +819,17 @@
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg> Fetch`;
 
-      if (!resp.ok) {
-        showToast(`❌ ${data.error || 'Failed to fetch media info'}`);
-        return;
-      }
+      if (!resp.ok) { showToast(`❌ ${data.error || 'Failed to fetch media info'}`); return; }
 
       _currentUrl = url;
-
       document.getElementById('resultTitle').textContent = data.title;
       document.getElementById('resultSource').textContent = data.source;
       document.getElementById('resultDuration').textContent = data.duration;
-
-      // Show thumbnail image if available, otherwise emoji fallback
       const thumbEl = document.getElementById('resultThumb');
       if (data.thumbnail) {
         thumbEl.innerHTML = `<img src="${data.thumbnail}" alt="thumb" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
-      } else {
-        thumbEl.textContent = '🎬';
-      }
-
+      } else { thumbEl.textContent = '🎬'; }
       renderFormats(data.formats);
-
       resultPanel.style.display = 'block';
       requestAnimationFrame(() => requestAnimationFrame(() => resultPanel.classList.add('visible')));
       showToast(`✅ Found ${data.formats.length} formats for ${data.source}`);
@@ -1335,11 +839,9 @@
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg> Fetch`;
       showToast('❌ Could not reach backend — is the server running?');
-      console.error(err);
     }
   });
 
-  /* Close result panel */
   document.getElementById('resultClose').addEventListener('click', () => {
     resultPanel.classList.remove('visible');
     setTimeout(() => { resultPanel.style.display = 'none'; }, 400);
@@ -1347,21 +849,16 @@
     document.getElementById('urlDot').className = 'url-valid-dot';
   });
 
-  /* Enter key trigger */
-  document.getElementById('urlInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') downloadBtn.click();
-  });
+  document.getElementById('urlInput').addEventListener('keydown', e => { if (e.key === 'Enter') downloadBtn.click(); });
 
   /* ---- MARQUEE ---- */
   const platforms = [
-    ['▶', 'YouTube'], ['📸', 'Instagram'], ['🎵', 'TikTok'], ['🐦', 'X / Twitter'],
-    ['🎙', 'Spotify'], ['📺', 'Vimeo'], ['🎮', 'Twitch'], ['📘', 'Facebook'],
-    ['🎬', 'Dailymotion'], ['🎧', 'SoundCloud'], ['📌', 'Pinterest'], ['💬', 'Reddit'],
-    ['🎓', 'Coursera'], ['📡', 'Bilibili'], ['🎤', 'Mixcloud'], ['🌐', 'Rumble'],
+    ['▶','YouTube Videos'],['🎬','YouTube Shorts'],['🎵','YouTube Music'],
+    ['📺','YouTube Live'],['🎓','YouTube Courses'],['🎙','YouTube Podcasts'],
+    ['📡','YouTube Premieres'],['🔴','YouTube Streams'],
   ];
   const track = document.getElementById('marqueeTrack');
-  const doubled = [...platforms, ...platforms];
-  doubled.forEach(([icon, name]) => {
+  [...platforms,...platforms].forEach(([icon,name]) => {
     const card = document.createElement('div');
     card.className = 'platform-card';
     card.innerHTML = `<span>${icon}</span> ${name}`;
@@ -1370,12 +867,12 @@
 
   /* ---- FAQ ---- */
   const faqs = [
-    { q: 'Is DropLoad free to use?', a: 'Yes — the free tier is genuinely free, forever. You get 10 downloads per day at up to 720p without signing up.' },
-    { q: 'Do I need to create an account?', a: 'Nope. Just paste and download. An account is only needed if you want Pro features or to track your history.' },
-    { q: 'Is downloading media legal?', a: 'Legality depends on your country and the platform\'s terms of service. DropLoad is a tool — how you use it is your responsibility. We recommend downloading only content you own or have permission to use.' },
-    { q: 'How fast is the processing?', a: 'Most links are processed in 1–3 seconds. Longer videos or high-quality formats may take a few seconds more.' },
-    { q: 'Can I download private videos?', a: 'Private or login-restricted content cannot be downloaded without authentication. We only support publicly accessible media.' },
-    { q: 'What\'s included in the API access?', a: 'Pro users get a REST API with full format detection and download link generation. Full documentation is available after signup.' },
+    { q: 'Is DropLoad free to use?', a: 'Yes — completely free, forever. No signup, no limits, no watermarks.' },
+    { q: 'Do I need to create an account?', a: 'Nope. Just paste a link and download. No account ever required.' },
+    { q: 'Is downloading media legal?', a: 'Legality depends on your country and the platform\'s terms. Only download content you own or have permission to use.' },
+    { q: 'How fast is the processing?', a: 'Most links are processed in 1–3 seconds. Longer videos may take a few seconds more.' },
+    { q: 'Can I download private videos?', a: 'No — we only support publicly accessible media. Private or login-restricted content cannot be downloaded.' },
+    { q: 'Which platforms are supported?', a: 'DropLoad is focused on YouTube — including regular videos, Shorts, Music, Live streams, and Podcasts.' },
   ];
   const faqGrid = document.getElementById('faqGrid');
   faqs.forEach(({ q, a }) => {
@@ -1383,14 +880,12 @@
     item.className = 'faq-item reveal';
     item.innerHTML = `<div class="faq-q">${q}<span class="faq-toggle">+</span></div><p class="faq-a">${a}</p>`;
     item.addEventListener('click', () => {
-      // Close siblings
       faqGrid.querySelectorAll('.faq-item.open').forEach(el => { if (el !== item) el.classList.remove('open'); });
       item.classList.toggle('open');
     });
     faqGrid.appendChild(item);
   });
 
-  /* Re-observe newly added reveal elements */
   setTimeout(() => {
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
