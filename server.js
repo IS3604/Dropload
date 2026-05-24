@@ -66,48 +66,60 @@ function humanSize(bytes) {
 
 function buildFormats(info) {
   const formats = info.formats || [];
+
+  // Group by height, pick best per height
   const videoByHeight = {};
   for (const f of formats) {
     if (!f.vcodec || f.vcodec === 'none') continue;
     if (!f.height) continue;
     const h = f.height;
     const existing = videoByHeight[h];
-    const hasAudio = f.acodec && f.acodec !== 'none';
-    if (!existing) {
-      videoByHeight[h] = { ...f, hasAudio };
-    } else {
-      const exHasAudio = existing.hasAudio;
-      if (hasAudio && !exHasAudio) {
-        videoByHeight[h] = { ...f, hasAudio };
-      } else if (hasAudio === exHasAudio && (f.filesize || 0) > (existing.filesize || 0)) {
-        videoByHeight[h] = { ...f, hasAudio };
-      }
+    if (!existing || (f.filesize || 0) > (existing.filesize || 0)) {
+      videoByHeight[h] = f;
     }
   }
+
   const heights = Object.keys(videoByHeight).map(Number).sort((a, b) => b - a).slice(0, 5);
+
   const result = heights.map(h => {
     const f = videoByHeight[h];
     const label = h >= 2160 ? `${h >= 4320 ? '8K' : '4K'} · MP4` : `${h}p · MP4`;
     return {
-      formatId: `bestvideo[height<=${h}]+bestaudio/best[height<=${h}]/best[height<=${h}]`,
+      // Use the actual format_id from yt-dlp combined with best audio
+      formatId: `${f.format_id}+bestaudio/best`,
       label, badge: 'video',
       size: humanSize(f.filesize || f.filesize_approx) || `~${Math.round(h * 0.06)} MB`,
       height: h,
     };
   });
+
+  // Audio only
   const audioFormats = formats.filter(f => (!f.vcodec || f.vcodec === 'none') && f.acodec && f.acodec !== 'none');
   if (audioFormats.length > 0) {
     const best = audioFormats.sort((a, b) => (b.abr || 0) - (a.abr || 0))[0];
-    result.push({ formatId: 'bestaudio/best', label: 'Audio only · MP3', badge: 'audio', size: humanSize(best.filesize || best.filesize_approx) || '~8 MB', height: null });
+    result.push({
+      formatId: 'bestaudio/best',
+      label: 'Audio only · MP3', badge: 'audio',
+      size: humanSize(best.filesize || best.filesize_approx) || '~8 MB',
+      height: null
+    });
   }
+
   if (result.length === 0) {
     result.push(
       { formatId: 'bestvideo+bestaudio/best', label: 'Best Quality · MP4', badge: 'video', size: null, height: null },
       { formatId: 'bestaudio/best', label: 'Audio only · MP3', badge: 'audio', size: null, height: null }
     );
   }
+
   return result;
 }
+
+const COMMON_ARGS = [
+  '--no-playlist', '--no-warnings',
+  '--user-agent', UA,
+  '--no-check-certificate',
+];
 
 app.get('/health', (_, res) => res.json({ status: 'ok', uptime: process.uptime() }));
 
@@ -119,10 +131,8 @@ app.get('/api/info', async (req, res) => {
   catch { return res.status(400).json({ error: 'Invalid URL' }); }
   try {
     const json = await ytDlp([
-      '--dump-json', '--no-playlist', '--no-warnings',
-      '--user-agent', UA,
-      '--extractor-args', 'youtube:player_client=tv_embedded,web',
-      '--no-check-certificate',
+      '--dump-json',
+      ...COMMON_ARGS,
       ...getCookieArgs(),
       parsed.href,
     ]);
@@ -158,17 +168,11 @@ app.get('/api/download', async (req, res) => {
   res.setHeader('Content-Type', isAudio ? 'audio/mpeg' : 'video/mp4');
 
   const dlArgs = isAudio
-    ? ['--no-playlist', '--no-warnings', '--user-agent', UA,
-        '--extractor-args', 'youtube:player_client=tv_embedded,web',
-        '--no-check-certificate',
-        ...getCookieArgs(),
+    ? [...COMMON_ARGS, ...getCookieArgs(),
         '-f', 'bestaudio/best',
         '-x', '--audio-format', 'mp3', '--audio-quality', '0',
         '-o', `${tmpBase}.%(ext)s`, parsed.href]
-    : ['--no-playlist', '--no-warnings', '--user-agent', UA,
-        '--extractor-args', 'youtube:player_client=tv_embedded,web',
-        '--no-check-certificate',
-        ...getCookieArgs(),
+    : [...COMMON_ARGS, ...getCookieArgs(),
         '-f', formatId,
         '--merge-output-format', 'mp4',
         '-o', tmpFile, parsed.href];
