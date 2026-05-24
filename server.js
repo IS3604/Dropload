@@ -107,7 +107,7 @@ app.get('/api/info', async (req, res) => {
     const json = await ytDlp([
       '--dump-json', '--no-playlist', '--no-warnings',
       '--user-agent', UA,
-      '--extractor-args', 'youtube:player_client=android,web',
+      '--extractor-args', 'youtube:player_client=tv_embedded,web',
       '--no-check-certificate',
       parsed.href,
     ]);
@@ -144,13 +144,13 @@ app.get('/api/download', async (req, res) => {
 
   const dlArgs = isAudio
     ? ['--no-playlist', '--no-warnings', '--user-agent', UA,
-        '--extractor-args', 'youtube:player_client=android,web',
+        '--extractor-args', 'youtube:player_client=tv_embedded,web',
         '--no-check-certificate',
         '-f', 'bestaudio/best',
         '-x', '--audio-format', 'mp3', '--audio-quality', '0',
         '-o', `${tmpBase}.%(ext)s`, parsed.href]
     : ['--no-playlist', '--no-warnings', '--user-agent', UA,
-        '--extractor-args', 'youtube:player_client=android,web',
+        '--extractor-args', 'youtube:player_client=tv_embedded,web',
         '--no-check-certificate',
         '-f', formatId,
         '--merge-output-format', 'mp4',
