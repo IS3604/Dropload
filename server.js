@@ -1,30 +1,18 @@
-/**
- * DropLoad Backend — server.js
- * yt-dlp for YouTube/TikTok/etc + RapidAPI for Instagram
- */
-
 const express = require('express');
 const cors    = require('cors');
 const { spawn } = require('child_process');
 const path    = require('path');
 const fs      = require('fs');
 const os      = require('os');
-const https   = require('https');
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
 
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || '2d2f763f83mshfd74c67f8b4d298p139dd8jsn2166cc27ce06';
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function isInstagramUrl(url) {
-  return /instagram\.com\/(reel|p|tv|stories)\//i.test(url);
-}
 
 function ytDlp(args) {
   const isWin = process.platform === 'win32';
@@ -107,99 +95,20 @@ function buildFormats(info) {
   return result;
 }
 
-// ─── Instagram via RapidAPI ───────────────────────────────────────────────────
-
-function rapidApiRequest(urlToFetch) {
-  return new Promise((resolve, reject) => {
-    const encoded = encodeURIComponent(urlToFetch);
-    const options = {
-      method: 'GET',
-      hostname: 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com',
-      path: `/index?url=${encoded}`,
-      headers: {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
-      }
-    };
-    const req = https.request(options, res => {
-      let data = '';
-      res.on('data', chunk => (data += chunk));
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error('Invalid JSON from Instagram API')); }
-      });
-    });
-    req.on('error', reject);
-    req.end();
-  });
-}
-
-async function getInstagramInfo(url) {
-  const data = await rapidApiRequest(url);
-  console.log('[Instagram API response]', JSON.stringify(data).slice(0, 300));
-
-  // Handle various response shapes from this API
-  let videoUrl = null;
-  let thumbnail = null;
-  let title = 'Instagram Video';
-
-  if (data.media && Array.isArray(data.media) && data.media.length > 0) {
-    const item = data.media[0];
-    videoUrl = item.url || item.video_url || item.download_url;
-    thumbnail = item.thumbnail || item.thumb || item.cover;
-    title = data.title || data.caption || 'Instagram Video';
-  } else if (data.url) {
-    videoUrl = data.url;
-    thumbnail = data.thumbnail || data.thumb;
-    title = data.title || data.caption || 'Instagram Video';
-  } else if (Array.isArray(data) && data.length > 0) {
-    videoUrl = data[0].url || data[0].video_url;
-    thumbnail = data[0].thumbnail;
-    title = 'Instagram Video';
-  } else if (data.video_url) {
-    videoUrl = data.video_url;
-    thumbnail = data.thumbnail_url || data.thumbnail;
-    title = data.title || 'Instagram Video';
-  } else if (data.result) {
-    const r = data.result;
-    videoUrl = r.url || r.video_url || (Array.isArray(r) && r[0]?.url);
-    thumbnail = r.thumbnail || r.thumb;
-    title = r.title || data.title || 'Instagram Video';
-  }
-
-  if (!videoUrl) throw new Error('Could not extract video URL from Instagram. The post may be private or unavailable.');
-
-  return {
-    title,
-    source: 'Instagram',
-    duration: '-',
-    thumbnail,
-    isInstagram: true,
-    formats: [
-      { formatId: videoUrl, label: 'Video · MP4', badge: 'video', size: null, height: null, directUrl: true }
-    ]
-  };
-}
-
-// ─── Routes ───────────────────────────────────────────────────────────────────
-
 app.get('/health', (_, res) => res.json({ status: 'ok', uptime: process.uptime() }));
 
 app.get('/api/info', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'url query param is required' });
-
   let parsed;
   try { parsed = new URL(url.startsWith('http') ? url : `https://${url}`); }
   catch { return res.status(400).json({ error: 'Invalid URL' }); }
-
   try {
-    if (isInstagramUrl(parsed.href)) {
-      const info = await getInstagramInfo(parsed.href);
-      return res.json(info);
-    }
-
-    const json = await ytDlp(['--dump-json', '--no-playlist', '--no-warnings', parsed.href]);
+    const json = await ytDlp([
+      '--dump-json', '--no-playlist', '--no-warnings',
+      '--user-agent', UA,
+      parsed.href,
+    ]);
     const info = JSON.parse(json);
     return res.json({
       title:     info.title    || 'Untitled',
@@ -217,65 +126,39 @@ app.get('/api/info', async (req, res) => {
 app.get('/api/download', async (req, res) => {
   const { url, formatId, filename } = req.query;
   if (!url || !formatId) return res.status(400).json({ error: 'url and formatId are required' });
-
   let parsed;
   try { parsed = new URL(url.startsWith('http') ? url : `https://${url}`); }
   catch { return res.status(400).json({ error: 'Invalid URL' }); }
 
+  const isAudio      = formatId === 'bestaudio/best';
   const safeFilename = (filename || 'download').replace(/[^a-z0-9 _\-\.]/gi, '_');
-
-  // Instagram: formatId IS the direct video URL
-  if (isInstagramUrl(parsed.href)) {
-    // Check if formatId looks like a URL
-    let directUrl = formatId;
-    if (!directUrl.startsWith('http')) {
-      // Re-fetch info to get the direct URL
-      try {
-        const info = await getInstagramInfo(parsed.href);
-        directUrl = info.formats[0]?.formatId;
-      } catch (e) {
-        return res.status(422).json({ error: e.message });
-      }
-    }
-
-    res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.mp4"`);
-    res.setHeader('Content-Type', 'video/mp4');
-
-    const dlUrl = new URL(directUrl);
-    const proto = dlUrl.protocol === 'https:' ? https : require('http');
-    const dlReq = proto.get(directUrl, dlRes => {
-      if (dlRes.headers['content-length']) res.setHeader('Content-Length', dlRes.headers['content-length']);
-      dlRes.pipe(res);
-    });
-    dlReq.on('error', err => {
-      console.error('[instagram proxy]', err.message);
-      if (!res.headersSent) res.status(500).json({ error: 'Failed to stream Instagram video' });
-    });
-    return;
-  }
-
-  // Normal yt-dlp download
-  const isAudio = formatId === 'bestaudio/best';
-  const ext     = isAudio ? 'mp3' : 'mp4';
-  const tmpDir  = os.tmpdir();
-  const tmpBase = path.join(tmpDir, `dl_${Date.now()}_${Math.random().toString(36).slice(2)}`);
-  const tmpFile = `${tmpBase}.${ext}`;
+  const ext          = isAudio ? 'mp3' : 'mp4';
+  const tmpDir       = os.tmpdir();
+  const tmpBase      = path.join(tmpDir, `dl_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  const tmpFile      = `${tmpBase}.${ext}`;
 
   res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.${ext}"`);
   res.setHeader('Content-Type', isAudio ? 'audio/mpeg' : 'video/mp4');
 
   const dlArgs = isAudio
-    ? ['--no-playlist', '--no-warnings', '-f', 'bestaudio/best', '-x', '--audio-format', 'mp3', '--audio-quality', '0', '-o', `${tmpBase}.%(ext)s`, parsed.href]
-    : ['--no-playlist', '--no-warnings', '-f', formatId, '--merge-output-format', 'mp4', '-o', tmpFile, parsed.href];
+    ? ['--no-playlist', '--no-warnings', '--user-agent', UA,
+        '-f', 'bestaudio/best',
+        '-x', '--audio-format', 'mp3', '--audio-quality', '0',
+        '-o', `${tmpBase}.%(ext)s`, parsed.href]
+    : ['--no-playlist', '--no-warnings', '--user-agent', UA,
+        '-f', formatId,
+        '--merge-output-format', 'mp4',
+        '-o', tmpFile, parsed.href];
 
   try {
+    console.log(`[download] Starting: ${formatId} → ${safeFilename}.${ext}`);
     await ytDlp(dlArgs);
     if (!fs.existsSync(tmpFile)) throw new Error('Output file not found after download');
     const stat = fs.statSync(tmpFile);
     res.setHeader('Content-Length', stat.size);
     const stream = fs.createReadStream(tmpFile);
     stream.pipe(res);
-    stream.on('end', () => fs.unlink(tmpFile, () => {}));
+    stream.on('end', () => { fs.unlink(tmpFile, () => {}); console.log(`[download] Done: ${safeFilename}.${ext}`); });
     stream.on('error', e => { console.error(e); fs.unlink(tmpFile, () => {}); res.destroy(); });
   } catch (err) {
     console.error('[/api/download]', err.message);
