@@ -89,7 +89,7 @@ function buildFormats(info) {
     const f = videoByHeight[h];
     const label = h >= 2160 ? `${h >= 4320 ? '8K' : '4K'} · MP4` : `${h}p · MP4`;
     return {
-      formatId: `bestvideo[height=${h}]+bestaudio/best[height<=${h}]`,
+      formatId: `bestvideo[height<=${h}]+bestaudio/best[height<=${h}]/best[height<=${h}]`,
       label, badge: 'video',
       size: humanSize(f.filesize || f.filesize_approx) || `~${Math.round(h * 0.06)} MB`,
       height: h,
