@@ -10,6 +10,20 @@ const PORT = process.env.PORT || 3001;
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
+// Write cookies from env variable to a temp file on startup
+const COOKIES_FILE = path.join(os.tmpdir(), 'yt_cookies.txt');
+if (process.env.YOUTUBE_COOKIES) {
+  fs.writeFileSync(COOKIES_FILE, process.env.YOUTUBE_COOKIES, 'utf8');
+  console.log('[cookies] Loaded YouTube cookies from environment variable');
+} else {
+  console.log('[cookies] No YOUTUBE_COOKIES env variable found');
+}
+
+function getCookieArgs() {
+  if (fs.existsSync(COOKIES_FILE)) return ['--cookies', COOKIES_FILE];
+  return [];
+}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -109,6 +123,7 @@ app.get('/api/info', async (req, res) => {
       '--user-agent', UA,
       '--extractor-args', 'youtube:player_client=tv_embedded,web',
       '--no-check-certificate',
+      ...getCookieArgs(),
       parsed.href,
     ]);
     const info = JSON.parse(json);
@@ -146,12 +161,14 @@ app.get('/api/download', async (req, res) => {
     ? ['--no-playlist', '--no-warnings', '--user-agent', UA,
         '--extractor-args', 'youtube:player_client=tv_embedded,web',
         '--no-check-certificate',
+        ...getCookieArgs(),
         '-f', 'bestaudio/best',
         '-x', '--audio-format', 'mp3', '--audio-quality', '0',
         '-o', `${tmpBase}.%(ext)s`, parsed.href]
     : ['--no-playlist', '--no-warnings', '--user-agent', UA,
         '--extractor-args', 'youtube:player_client=tv_embedded,web',
         '--no-check-certificate',
+        ...getCookieArgs(),
         '-f', formatId,
         '--merge-output-format', 'mp4',
         '-o', tmpFile, parsed.href];
